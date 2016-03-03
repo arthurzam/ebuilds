@@ -18,7 +18,7 @@ IUSE=""
 
 REQUIRED_USE=""
 
-DEPEND="
+RDEPEND="
    	dev-qt/qtcore:4
     dev-qt/qtdeclarative:4
    	dev-qt/qtgui:4
@@ -28,6 +28,7 @@ DEPEND="
    	dev-qt/qtsvg:4
    	dev-qt/qtxmlpatterns:4
     "
+DEPEND="${RDEPEND}"
 src_configure() {
     eqmake4
 }

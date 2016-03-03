@@ -23,7 +23,7 @@ IUSE="+qt4 qt5 unique"
 
 REQUIRED_USE="^^ ( qt4 qt5 )"
 
-DEPEND="
+RDEPEND="
     qt4? (
     	dev-qt/qtcore:4
 	    dev-qt/qtdeclarative:4
@@ -44,6 +44,7 @@ DEPEND="
         dev-qt/qtwidgets:5
     )
     "
+DEPEND="${RDEPEND}"
 src_configure() {
 	local mycmakeargs=(
 		$(cmake-utils_use_use qt5)
