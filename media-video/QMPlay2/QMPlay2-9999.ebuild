@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI="5"
+EAPI="6"
 
 inherit user git-r3 cmake-utils
 
@@ -13,7 +13,7 @@ LICENSE="LGPL"
 SLOT="0"
 
 L10N=" de es fr pl ru"
-IUSE="+alsa -pulseaudio qt4 +qt5 gme cdda +taglib debug portaudio prostopleer +xvideo +libass"
+IUSE="+alsa -pulseaudio qt4 +qt5 gme libsidplay cdda +taglib debug portaudio prostopleer +xvideo +libass vaapi vdpau"
 IUSE+="${L10N// / l10n_}"
 
 COMMON_DEPENDS="
@@ -34,7 +34,8 @@ COMMON_DEPENDS="
 	)
 	>=media-video/ffmpeg-2.2.0[libass?,vorbis(+),aac(+),openssl(+),gme?]
 	libass? ( media-libs/libass )
-	x11-libs/libva[X,vdpau]
+	vaapi? ( x11-libs/libva[X,vdpau?] )
+	vdpau? ( x11-libs/libvdpau )
 	cdda? (
 		media-libs/libcddb
 		dev-libs/libcdio
@@ -45,6 +46,7 @@ COMMON_DEPENDS="
 	portaudio? ( media-libs/portaudio )
 
 	gme? ( media-libs/game-music-emu )
+	libsidplay? ( media-libs/libsidplayfp )
 
 
 	xvideo? ( x11-libs/libXv )
@@ -53,7 +55,6 @@ RDEPEND="${COMMON_DEPENDS}
 	net-misc/youtube-dl 
 	media-video/atomicparsley
 "
-	#media-libs/libsidplayfp
 	#media-video/rtmpdump
 DEPENDS="${COMMON_DEPENDS}
 	dev-qt/qtchooser
@@ -68,16 +69,18 @@ src_configure() {
 
 	local mycmakeargs=(
 		-DLANGUAGES="${langs}"
-		$(cmake-utils_use_use qt5 QT5)
-		$(cmake-utils_use_use gme CHIPTUNE_GME)
-#		$(cmake-utils_use chiptune USE_CHIPTUNE_SID)
-		$(cmake-utils_use_use cdda AUDIOCD)
-		$(cmake-utils_use_use pulseaudio PULSEAUDIO)
-		$(cmake-utils_use_use portaudio PORTAUDIO)
-		$(cmake-utils_use_use prostopleer PROSTOPLEER)
-		$(cmake-utils_use_use taglib TAGLIB)
-		$(cmake-utils_use_use libass LIBASS)
-		$(cmake-utils_use_use xvideo XVIDEO)
+		-DUSE_QT5=$(usex qt5)
+		-DUSE_CHIPTUNE_GME=$(usex gme)
+		-DUSE_CHIPTUNE_SID=$(usex libsidplay)
+		-DUSE_AUDIOCD=$(usex cdda)
+		-DUSE_PULSEAUDIO=$(usex pulseaudio)
+		-DUSE_PORTAUDIO=$(usex portaudio)
+		-DUSE_PROSTOPLEER=$(usex prostopleer)
+		-DUSE_TAGLIB=$(usex taglib)
+		-DUSE_LIBASS=$(usex libass)
+		-DUSE_FFMPEG_VAAPI=$(usex vaapi)
+		-DUSE_FFMPEG_VDPAU=$(usex vdpau)
+		-DUSE_XVIDEO=$(usex xvideo)
 	)
 	use !debug && append-cppflags -DQT_NO_DEBUG_OUTPUT
 	cmake-utils_src_configure
