@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI=5
+EAPI=6
 
 EGIT_REPO_URI="https://github.com/clementine-player/Clementine.git"
 
@@ -28,7 +28,6 @@ REQUIRED_USE="
 	udisks? ( dbus )
 	wiimote? ( dbus )
 "
-#use qt5 && EGIT_REPO_URI="https://github.com/Chocobozzz/Clementine.git"
 
 COMMON_DEPEND="
 	qt5? (
@@ -134,32 +133,32 @@ src_configure() {
 		-DBUILD_WERROR=OFF
 		-DLINGUAS="${langs}"
 		-DBUNDLE_PROJECTM_PRESETS=OFF
-		$(cmake-utils_use cdda ENABLE_AUDIOCD)
-		$(cmake-utils_use dbus ENABLE_DBUS)
-		$(cmake-utils_use udisks ENABLE_DEVICEKIT)
-		$(cmake-utils_use ipod ENABLE_LIBGPOD)
-		$(cmake-utils_use lastfm ENABLE_LIBLASTFM)
-		$(cmake-utils_use mtp ENABLE_LIBMTP)
-		$(cmake-utils_use moodbar ENABLE_MOODBAR)
+		-DENABLE_AUDIOCD=$(usex cdda)
+		-DENABLE_DBUS=$(usex dbus)
+		-DENABLE_DEVICEKIT=$(usex udisks)
+		-DENABLE_LIBGPOD=$(usex ipod)
+		-DENABLE_LIBLASTFM=$(usex lastfm)
+		-DENABLE_LIBMTP=$(usex mtp)
+		-DENABLE_MOODBAR=$(usex moodbar)
 		-DENABLE_GIO=ON
-		$(cmake-utils_use wiimote ENABLE_WIIMOTEDEV)
-		$(cmake-utils_use projectm ENABLE_VISUALISATIONS)
-		$(cmake-utils_use ayatana ENABLE_SOUNDMENU)
-		$(cmake-utils_use box ENABLE_BOX)
-		$(cmake-utils_use dropbox ENABLE_DROPBOX)
-		$(cmake-utils_use googledrive ENABLE_GOOGLE_DRIVE)
-		$(cmake-utils_use skydrive ENABLE_SKYDRIVE)
-		$(cmake-utils_use ubuntu-one ENABLE_UBUNTU_ONE)
-		$(cmake-utils_use amazon ENABLE_AMAZON_CLOUD_DRIVE)
-		$(cmake-utils_use vk ENABLE_VK)
+		-DENABLE_WIIMOTEDEV=$(usex wiimote)
+		-DENABLE_VISUALISATIONS=$(usex projectm)
+		-DENABLE_SOUNDMENU=$(usex ayatana)
+		-DENABLE_BOX=$(usex box)
+		-DENABLE_DROPBOX=$(usex dropbox)
+		-DENABLE_GOOGLE_DRIVE=$(usex googledrive)
+		-DENABLE_SKYDRIVE=$(usex skydrive)
+		-DENABLE_UBUNTU_ONE=$(usex ubuntu-one)
+		-DENABLE_AMAZON_CLOUD_DRIVE=$(usex amazon)
+		-DENABLE_VK=$(usex vk)
 		-DENABLE_SPOTIFY_BLOB=OFF
 		-DENABLE_BREAKPAD=OFF
-		$(cmake-utils_use sparkle ENABLE_SPARKLE)
-		$(cmake-utils_use sealife ENABLE_SEAFILE)
-		$(cmake-utils_use pulseaudio ENABLE_LIBPULSE)
-		$(cmake-utils_use !system-sqlite STATIC_SQLITE)
-		$(cmake-utils_use system-sqlite I_HATE_MY_USERS)
-		$(cmake-utils_use system-sqlite MY_USERS_WILL_SUFFER_BECAUSE_OF_ME)
+		-DENABLE_SPARKLE=$(usex sparkle)
+		-DENABLE_SEAFILE=$(usex sealife)
+		-DENABLE_LIBPULSE=$(usex pulseaudio)
+		-DSTATIC_SQLITE=$(usex !system-sqlite)
+		-DI_HATE_MY_USERS=$(usex system-sqlite)
+		-DMY_USERS_WILL_SUFFER_BECAUSE_OF_ME=$(usex system-sqlite)
 		-DUSE_BUILTIN_TAGLIB=OFF
 		-DUSE_SYSTEM_GMOCK=ON
 		# force to find crypto++ see bug #548544
