@@ -2,8 +2,8 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI=5
-inherit cmake-utils git-2
+EAPI=6
+inherit cmake-utils git-r3
 
 DESCRIPTION="Core library of PCManFM-Qt (Qt binding for libfm)"
 HOMEPAGE="https://github.com/lxde/libfm-qt"
