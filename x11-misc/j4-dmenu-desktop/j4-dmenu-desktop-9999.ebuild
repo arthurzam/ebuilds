@@ -2,17 +2,12 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI=5
+EAPI=6
 
 inherit cmake-utils
 
-if [[ "${PV}" == "9999" ]]; then
-	EGIT_REPO_URI="https://github.com/enkore/j4-dmenu-desktop"
-	inherit git-2
-else
-	SRC_URI="https://downloads.lxqt.org/lxqt/${PV}/${P}.tar.xz"
-	KEYWORDS="~amd64 ~x86"
-fi
+EGIT_REPO_URI="https://github.com/enkore/j4-dmenu-desktop"
+inherit git-r3
 
 DESCRIPTION="A rewrite of i3-dmenu-desktop, which is much faster"
 HOMEPAGE="https://github.com/enkore/j4-dmenu-desktop"
@@ -26,7 +21,7 @@ RDEPEND="
 
 src_configure() {
 	local mycmakeargs=(
-		-DNO_TESTS=1
+		-DNO_TESTS=ON
 	)
 	cmake-utils_src_configure
 }
