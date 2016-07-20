@@ -2,17 +2,12 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI=5
+EAPI=6
 
 inherit cmake-utils
 
-if [[ "${PV}" == "9999" ]]; then
-	EGIT_REPO_URI="https://github.com/lxde/pcmanfm-qt"
-	inherit git-2
-else
-	SRC_URI="https://downloads.lxqt.org/lxqt/${PV}/${P}.tar.xz"
-	KEYWORDS="~amd64   ~x86"
-fi
+EGIT_REPO_URI="https://github.com/lxde/pcmanfm-qt"
+inherit git-r3
 
 DESCRIPTION="Fast lightweight tabbed filemanager (Qt port)"
 HOMEPAGE="http://pcmanfm.sourceforge.net/"
