@@ -2,9 +2,9 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI=5
+EAPI=6
 
-inherit cmake-utils git-2
+inherit cmake-utils git-r3
 
 DESCRIPTION="Qt5-based download/upload manager"
 HOMEPAGE="http://fatrat.dolezel.info/"
@@ -21,10 +21,11 @@ RDEPEND="
 	dev-qt/qtsvg:5
 	dev-qt/qtwidgets:5
 	dev-qt/qtnetwork:5
-	bittorrent? ( >=net-libs/rb_libtorrent-0.14.5
-			dev-qt/qtwebkit:5
-			dev-qt/qtwebengine:5
-			)
+	bittorrent? (
+		>=net-libs/rb_libtorrent-0.14.5
+		dev-qt/qtwebkit:5
+		dev-qt/qtwebengine:5
+	)
 	curl? ( >=net-misc/curl-7.18.2 )
 	doc? ( dev-qt/qthelp:5 )
 	xmpp? ( net-libs/gloox )
@@ -34,14 +35,15 @@ DEPEND="${RDEPEND}
 	nls? ( sys-devel/gettext )"
 
 src_configure() {
-		local mycmakeargs="
-			$(cmake-utils_use_with bittorrent) \
-			$(cmake-utils_use_with curl) \
-			$(cmake-utils_use_with doc DOCUMENTATION) \
-			$(cmake-utils_use_with xmpp JABBER) \
-			$(cmake-utils_use_with nls) \
-			$(cmake-utils_use_with webinterface)"
-		cmake-utils_src_configure
+	local mycmakeargs=(
+		-DWITH_BITTORRENT=$(usex bittorrent)
+		-DWITH_CURL=$(usex curl)
+		-DWITH_DOCUMENTATION=$(usex doc)
+		-DWITH_JABBER=$(usex xmpp)
+		-DWITH_NLS=$(usex nls)
+		-DWITH_WEBINTERFACE=$(usex webinterface)
+	)
+	cmake-utils_src_configure
 }
 
 src_install() {
