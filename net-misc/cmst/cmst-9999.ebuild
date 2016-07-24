@@ -2,13 +2,13 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI=5
+EAPI=6
 inherit qmake-utils
 
 DESCRIPTION="Qt GUI for Connman with system tray icon"
 HOMEPAGE="https://github.com/andrew-bibb/cmst"
 if [[ ${PV} == *9999* ]] ; then
-	inherit git-2
+	inherit git-r3
 	EGIT_REPO_URI="https://github.com/andrew-bibb/cmst.git"
 else
 	KEYWORDS="~amd64 ~x86"
