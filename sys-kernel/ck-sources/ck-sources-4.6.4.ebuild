@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI="5"
+EAPI="6"
 ETYPE="sources"
 KEYWORDS="~amd64 ~x86"
 
@@ -74,7 +74,7 @@ UNIPATCH_STRICTORDER="yes"
 K_EXP_GENPATCHES_LIST="50*_*.patch*"
 
 src_prepare() {
-
+	default
 #-- Comment out CK's EXTRAVERSION in Makefile ---------------------------------
 
 	sed -i -e 's/\(^EXTRAVERSION :=.*$\)/# \1/' "${S}/Makefile"
