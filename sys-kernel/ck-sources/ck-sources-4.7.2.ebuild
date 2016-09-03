@@ -12,11 +12,11 @@ HOMEPAGE="https://dev.gentoo.org/~mpagano/genpatches/
 K_WANT_GENPATCHES="base extras experimental"
 K_EXP_GENPATCHES_PULL="1"
 K_EXP_GENPATCHES_NOUSE="1"
-K_GENPATCHES_VER="5"
+K_GENPATCHES_VER="3"
 K_SECURITY_UNSUPPORTED="1"
 K_DEBLOB_AVAILABLE="1"
 
-inherit kernel-2
+inherit kernel-2 eutils
 detect_version
 #detect_arch
 
@@ -31,7 +31,7 @@ XTRA_INCP_MAX=""
 
 #--
 
-CK_VERSION="1"
+CK_VERSION="2"
 
 CK_FILE="patch-${K_BRANCH_ID}-ck${CK_VERSION}.xz"
 
