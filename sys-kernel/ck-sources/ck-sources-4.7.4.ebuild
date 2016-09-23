@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI="6"
+EAPI="5"
 ETYPE="sources"
 KEYWORDS="~amd64 ~x86"
 
@@ -12,13 +12,13 @@ HOMEPAGE="https://dev.gentoo.org/~mpagano/genpatches/
 K_WANT_GENPATCHES="base extras experimental"
 K_EXP_GENPATCHES_PULL="1"
 K_EXP_GENPATCHES_NOUSE="1"
-K_GENPATCHES_VER="3"
+K_GENPATCHES_VER="5"
 K_SECURITY_UNSUPPORTED="1"
 K_DEBLOB_AVAILABLE="1"
 
-inherit kernel-2 eutils
+inherit kernel-2
 detect_version
-#detect_arch
+detect_arch
 
 K_BRANCH_ID="${KV_MAJOR}.${KV_MINOR}"
 
@@ -31,7 +31,7 @@ XTRA_INCP_MAX=""
 
 #--
 
-CK_VERSION="2"
+CK_VERSION="5"
 
 CK_FILE="patch-${K_BRANCH_ID}-ck${CK_VERSION}.xz"
 
@@ -74,7 +74,7 @@ UNIPATCH_STRICTORDER="yes"
 K_EXP_GENPATCHES_LIST="50*_*.patch*"
 
 src_prepare() {
-	default
+
 #-- Comment out CK's EXTRAVERSION in Makefile ---------------------------------
 
 	sed -i -e 's/\(^EXTRAVERSION :=.*$\)/# \1/' "${S}/Makefile"
