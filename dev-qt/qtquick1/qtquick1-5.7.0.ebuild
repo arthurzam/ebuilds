@@ -11,7 +11,7 @@ KEYWORDS="~amd64 ~x86"
 
 EGIT_REPO_URI="https://code.qt.io/qt/qtquick1.git"
 EGIT_CLONE_TYPE="shallow"
-EGIT_BRANCH="${PV}"
+EGIT_BRANCH="${PV%.*}"
 
 
 IUSE="designer gles2 opengl webkit xml"
