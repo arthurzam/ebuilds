@@ -13,7 +13,7 @@ EGIT_REPO_URI="https://github.com/LubosD/fatrat.git"
 
 LICENSE="GPL-2"
 SLOT="0"
-IUSE="bittorrent +curl doc xmpp nls webinterface"
+IUSE="bittorrent bittorrent-search +curl doc xmpp nls webinterface"
 
 RDEPEND="
 	dev-qt/qtdbus:5
@@ -21,11 +21,8 @@ RDEPEND="
 	dev-qt/qtsvg:5
 	dev-qt/qtwidgets:5
 	dev-qt/qtnetwork:5
-	bittorrent? (
-		>=net-libs/rb_libtorrent-0.14.5
-		dev-qt/qtwebkit:5
-		dev-qt/qtwebengine:5
-	)
+	bittorrent? ( >=net-libs/rb_libtorrent-0.14.5 )
+	bittorrent-search? ( dev-qt/qtwebengine:5 )
 	curl? ( >=net-misc/curl-7.18.2 )
 	doc? ( dev-qt/qthelp:5 )
 	xmpp? ( net-libs/gloox )
@@ -42,6 +39,7 @@ src_configure() {
 		-DWITH_JABBER=$(usex xmpp)
 		-DWITH_NLS=$(usex nls)
 		-DWITH_WEBINTERFACE=$(usex webinterface)
+		-DQt5WebEngine_FOUND=$(usex bittorrent-search)
 	)
 	cmake-utils_src_configure
 }
