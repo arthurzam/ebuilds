@@ -18,5 +18,6 @@ DEPEND="
 	dev-qt/qtgui:5
 	dev-qt/qtx11extras:5
 	lxde-base/menu-cache
+	~lxqt-base/lxqt-build-tools-${PV}
 	x11-libs/libfm"
 RDEPEND="${DEPEND}"
