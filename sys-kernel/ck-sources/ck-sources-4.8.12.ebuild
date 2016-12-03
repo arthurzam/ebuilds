@@ -12,7 +12,7 @@ HOMEPAGE="https://dev.gentoo.org/~mpagano/genpatches/
 K_WANT_GENPATCHES="base extras experimental"
 K_EXP_GENPATCHES_PULL="1"
 K_EXP_GENPATCHES_NOUSE="1"
-K_GENPATCHES_VER="5"
+K_GENPATCHES_VER="13"
 K_SECURITY_UNSUPPORTED="1"
 K_DEBLOB_AVAILABLE="1"
 
@@ -31,7 +31,7 @@ XTRA_INCP_MAX=""
 
 #--
 
-CK_VERSION="5"
+CK_VERSION="8"
 
 CK_FILE="patch-${K_BRANCH_ID}-ck${CK_VERSION}.xz"
 
@@ -71,7 +71,7 @@ UNIPATCH_STRICTORDER="yes"
 
 #-- Since experimental genpatches && we want BFQ irrespective of experimental -
 
-K_EXP_GENPATCHES_LIST="50*_*.patch*"
+K_EXP_GENPATCHES_LIST="5010_*.patch*"
 
 src_prepare() {
 
