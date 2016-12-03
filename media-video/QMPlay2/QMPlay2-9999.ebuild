@@ -13,7 +13,7 @@ LICENSE="LGPL"
 SLOT="0"
 
 L10N=" de es fr pl ru"
-IUSE="+alsa -pulseaudio qt4 +qt5 gme libsidplay cdda +taglib debug portaudio lastfm prostopleer +xvideo +libass vaapi vdpau modplug +dbus"
+IUSE="+alsa -pulseaudio qt4 +qt5 gme libsidplay cdda +taglib debug portaudio lastfm prostopleer +xvideo +libass vaapi vdpau modplug +dbus cuda"
 IUSE+="${L10N// / l10n_}"
 
 COMMON_DEPENDS="
@@ -41,6 +41,7 @@ COMMON_DEPENDS="
 	pulseaudio? ( media-sound/pulseaudio )
 	alsa? ( media-libs/alsa-lib )
 	taglib? ( media-libs/taglib )
+	cuda? ( dev-util/nvidia-cuda-sdk )
 	portaudio? ( media-libs/portaudio )
 	gme? ( media-libs/game-music-emu )
 	libsidplay? ( media-libs/libsidplayfp )
@@ -67,6 +68,7 @@ src_configure() {
 		-DUSE_AUDIOCD=$(usex cdda)
 		-DUSE_CHIPTUNE_GME=$(usex gme)
 		-DUSE_CHIPTUNE_SID=$(usex libsidplay)
+		-DUSE_CUVID=$(usex cuda)
 		-DUSE_FFMPEG_VAAPI=$(usex vaapi)
 		-DUSE_FFMPEG_VDPAU=$(usex vdpau)
 		-DUSE_LASTFM=$(usex lastfm)
