@@ -13,11 +13,12 @@ LICENSE="GPL-2+"
 SLOT="0"
 KEYWORDS="amd64 ~arm ~x86"
 
-DEPEND="
+RDEPEND="
 	dev-qt/qtwidgets:5
 	dev-qt/qtgui:5
 	dev-qt/qtx11extras:5
 	lxde-base/menu-cache
-	~lxqt-base/lxqt-build-tools-${PV}
 	x11-libs/libfm"
-RDEPEND="${DEPEND}"
+RDEPEND="${DEPEND}
+	~dev-util/lxqt-build-tools-${PV}
+"

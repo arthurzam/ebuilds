@@ -4,7 +4,7 @@
 
 EAPI="6"
 
-inherit user git-r3 cmake-utils
+inherit user git-r3 cmake-utils gnome2-utils xdg-utils
 
 DESCRIPTION="QMPlay2 is a video player, it can plays all formats and stream"
 HOMEPAGE="http://qt-apps.org/content/show.php/QMPlay2?content=153339"
@@ -13,7 +13,7 @@ LICENSE="LGPL"
 SLOT="0"
 
 L10N=" de es fr pl ru"
-IUSE="+alsa -pulseaudio qt4 +qt5 gme libsidplay cdda +taglib debug portaudio lastfm prostopleer +xvideo +libass vaapi vdpau modplug +dbus cuda"
+IUSE="+alsa -pulseaudio qt4 +qt5 gme libsidplay cdda +taglib debug portaudio +lastfm +prostopleer xvideo +libass vaapi vdpau modplug +dbus cuda"
 IUSE+="${L10N// / l10n_}"
 
 COMMON_DEPENDS="
@@ -74,6 +74,7 @@ src_configure() {
 		-DUSE_LASTFM=$(usex lastfm)
 		-DUSE_LIBASS=$(usex libass)
 		-DUSE_MODPLUG=$(usex modplug)
+		-DUSE_NOTIFIES=$(usex dbus)
 		-DUSE_MPRIS2=$(usex dbus)
 		-DUSE_PORTAUDIO=$(usex portaudio)
 		-DUSE_PROSTOPLEER=$(usex prostopleer)
@@ -83,4 +84,16 @@ src_configure() {
 	)
 	use !debug && append-cppflags -DQT_NO_DEBUG_OUTPUT
 	cmake-utils_src_configure
+}
+
+pkg_postinst() {
+    gnome2_icon_cache_update
+    xdg_mimeinfo_database_update
+    xdg_desktop_database_update
+}
+
+pkg_postrm() {
+    gnome2_icon_cache_update
+    xdg_mimeinfo_database_update
+    xdg_desktop_database_update
 }

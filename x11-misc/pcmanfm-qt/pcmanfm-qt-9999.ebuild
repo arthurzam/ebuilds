@@ -30,6 +30,4 @@ RDEPEND="${CDEPEND}
 	virtual/freedesktop-icon-theme"
 DEPEND="${CDEPEND}
 	dev-qt/linguist-tools:5
-	>=dev-util/intltool-0.40
-	sys-devel/gettext
 	virtual/pkgconfig"

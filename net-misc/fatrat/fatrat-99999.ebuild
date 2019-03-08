@@ -21,7 +21,7 @@ RDEPEND="
 	dev-qt/qtsvg:5
 	dev-qt/qtwidgets:5
 	dev-qt/qtnetwork:5
-	bittorrent? ( >=net-libs/rb_libtorrent-0.14.5 )
+	bittorrent? ( >=net-libs/libtorrent-rasterbar-0.14.5 )
 	bittorrent-search? ( dev-qt/qtwebengine:5 )
 	curl? ( >=net-misc/curl-7.18.2 )
 	doc? ( dev-qt/qthelp:5 )

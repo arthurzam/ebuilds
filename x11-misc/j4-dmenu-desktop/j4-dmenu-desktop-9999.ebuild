@@ -21,7 +21,8 @@ RDEPEND="
 
 src_configure() {
 	local mycmakeargs=(
-		-DNO_TESTS=ON
+		-DWITH_TESTS=OFF
+		-DWITH_GIT_CATCH=OFF
 	)
 	cmake-utils_src_configure
 }
