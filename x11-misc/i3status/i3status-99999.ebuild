@@ -37,5 +37,6 @@ src_configure() {
 		-DLIBCONFUSE_LIBRARIES=/usr/lib/libconfuse.a
 		-DLIBNL_LIBRARIES="/usr/lib/libnl-3.a;/usr/lib/libnl-genl-3.a"
 	)
+	append-cppflags -fvisibility=hidden
 	cmake-utils_src_configure
 }
