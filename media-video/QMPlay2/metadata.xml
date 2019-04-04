@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>arthurzam+gentoo@gmail.com</email>
+		<name>Arthur Zamarin</name>
+	</maintainer>
+	<maintainer type="project">
+		<email>proxy-maint@gentoo.org</email>
+		<name>Proxy Maintainers</name>
+	</maintainer>
+	<use>
+		<flag name="gme">Build Chiptune with GME support</flag>
+		<flag name="cuda">Build CUDA decoder support</flag>
+		<flag name="lastfm">Build with LastFM support</flag>
+		<flag name="libsidplay">Build Chiptune with SIDPLAY support</flag>
+		<flag name="xvideo">Build with XVideo module</flag>
+	</use>
+	<upstream>
+		<remote-id type="github">zaps166/QMPlay2</remote-id>
+	</upstream>
+</pkgmetadata>

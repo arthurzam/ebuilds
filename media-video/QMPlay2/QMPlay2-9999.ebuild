@@ -1,36 +1,27 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
-EAPI="6"
+EAPI=7
 
-inherit user git-r3 cmake-utils gnome2-utils xdg-utils
+inherit user git-r3 cmake-utils xdg-utils
 
 DESCRIPTION="QMPlay2 is a video player, it can plays all formats and stream"
 HOMEPAGE="http://qt-apps.org/content/show.php/QMPlay2?content=153339"
 EGIT_REPO_URI="https://github.com/zaps166/QMPlay2.git"
-LICENSE="LGPL"
+LICENSE="LGPL-3"
 SLOT="0"
 
 L10N=" de es fr pl ru"
-IUSE="+alsa -pulseaudio qt4 +qt5 gme libsidplay cdda +taglib debug portaudio +lastfm +prostopleer xvideo +libass vaapi vdpau modplug +dbus cuda"
+IUSE="+alsa -pulseaudio cuda gme libsidplay cdda +taglib debug portaudio +lastfm xvideo +libass vaapi vdpau modplug +dbus"
 IUSE+="${L10N// / l10n_}"
 
-COMMON_DEPENDS="
-	qt4? (
-        dev-qt/qtcore:4
-	    dev-qt/qtgui:4
-		dev-qt/qtopengl:4
-		dbus? ( dev-qt/qtdbus:4 )
-	)
-	qt5? (
-	    dev-qt/qtcore:5
-	    dev-qt/qtgui:5
-	    dev-qt/qtwidgets:5
-		dev-qt/qtopengl:5
-		dbus? ( dev-qt/qtdbus:5 )
-	)
-	>=media-video/ffmpeg-2.2.0[libass?,vorbis(+),aac(+),openssl(+),gme?,librtmp(+)]
+DEPEND="
+	dev-qt/qtcore:5
+	dev-qt/qtgui:5
+	dev-qt/qtwidgets:5
+	dev-qt/qtopengl:5
+	dbus? ( dev-qt/qtdbus:5 )
+	media-video/ffmpeg[libass?,vorbis(+),aac(+),openssl(+),gme?,librtmp(+)]
 	libass? ( media-libs/libass )
 	vaapi? ( x11-libs/libva[X,vdpau?] )
 	vdpau? ( x11-libs/libvdpau )
@@ -47,13 +38,12 @@ COMMON_DEPENDS="
 	libsidplay? ( media-libs/libsidplayfp )
 	xvideo? ( x11-libs/libXv )
 "
-RDEPEND="${COMMON_DEPENDS}
-	net-misc/youtube-dl 
-	media-video/atomicparsley
+RDEPEND="${DEPEND}
+	net-misc/youtube-dl
 "
-DEPENDS="${COMMON_DEPENDS}
-	dev-qt/qtchooser
+BDEPENDS="
 	dev-qt/linguist-tools
+	virtual/pkgconfig
 "
 
 src_configure() {
@@ -64,7 +54,6 @@ src_configure() {
 
 	local mycmakeargs=(
 		-DLANGUAGES="${langs}"
-		-DUSE_QT5=$(usex qt5)
 		-DUSE_AUDIOCD=$(usex cdda)
 		-DUSE_CHIPTUNE_GME=$(usex gme)
 		-DUSE_CHIPTUNE_SID=$(usex libsidplay)
@@ -74,10 +63,8 @@ src_configure() {
 		-DUSE_LASTFM=$(usex lastfm)
 		-DUSE_LIBASS=$(usex libass)
 		-DUSE_MODPLUG=$(usex modplug)
-		-DUSE_NOTIFIES=$(usex dbus)
 		-DUSE_MPRIS2=$(usex dbus)
 		-DUSE_PORTAUDIO=$(usex portaudio)
-		-DUSE_PROSTOPLEER=$(usex prostopleer)
 		-DUSE_PULSEAUDIO=$(usex pulseaudio)
 		-DUSE_TAGLIB=$(usex taglib)
 		-DUSE_XVIDEO=$(usex xvideo)
@@ -87,13 +74,13 @@ src_configure() {
 }
 
 pkg_postinst() {
-    gnome2_icon_cache_update
-    xdg_mimeinfo_database_update
-    xdg_desktop_database_update
+	xdg_icon_cache_update
+	xdg_mimeinfo_database_update
+	xdg_desktop_database_update
 }
 
 pkg_postrm() {
-    gnome2_icon_cache_update
-    xdg_mimeinfo_database_update
-    xdg_desktop_database_update
+	xdg_icon_cache_update
+	xdg_mimeinfo_database_update
+	xdg_desktop_database_update
 }
