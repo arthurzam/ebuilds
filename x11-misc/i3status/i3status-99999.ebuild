@@ -1,8 +1,7 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI=6
+EAPI=7
 
 inherit cmake-utils git-r3
 
@@ -33,7 +32,7 @@ DEPEND="
 BDEPEND="virtual/pkgconfig"
 
 src_configure() {
-	use_if_iuse static && local mycmakeargs=(
+	use static && local mycmakeargs=(
 		-DLIBCONFUSE_LIBRARIES=/usr/lib/libconfuse.a
 		-DLIBNL_LIBRARIES="/usr/lib/libnl-3.a;/usr/lib/libnl-genl-3.a"
 	)
