@@ -19,7 +19,7 @@ RDEPEND="
 		dev-libs/confuse
 		dev-libs/libnl:3
 	)
-	>=dev-libs/yajl-2.0.2
+	dev-libs/yajl
 	media-libs/alsa-lib
 "
 DEPEND="
@@ -33,8 +33,8 @@ BDEPEND="virtual/pkgconfig"
 
 src_configure() {
 	use static && local mycmakeargs=(
-		-DLIBCONFUSE_LIBRARIES=/usr/lib/libconfuse.a
-		-DLIBNL_LIBRARIES="/usr/lib/libnl-3.a;/usr/lib/libnl-genl-3.a"
+		-DLIBCONFUSE_LIBRARIES=/usr/$(get_libdir)/libconfuse.a
+		-DLIBNL_LIBRARIES="/usr/$(get_libdir)/libnl-3.a;/usr/$(get_libdir)/libnl-genl-3.a"
 	)
 	append-cppflags -fvisibility=hidden
 	cmake-utils_src_configure

@@ -11,5 +11,6 @@
   <use>
     <flag name="bittorrent">Use the bittorrent protocol via net-libs/rb_libtorrent.</flag>
     <flag name="webinterface">Enable builtin webinterface.</flag>
+    <flag name="bittorrent-search">Enable search in torrent sites using <pkg>dev-qt/qtwebengine</pkg></flag>
   </use>
 </pkgmetadata>
