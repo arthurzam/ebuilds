@@ -7,8 +7,8 @@ inherit qmake-utils
 DESCRIPTION="Basic Meson build system integration for Qt Creator"
 HOMEPAGE="https://github.com/qtcreator-meson-plugin/qtcreator-meson-plugin"
 
-MY_COMMIT="3bfa6fa47d7dd0db802fa9cf87fa01b87853c0fa"
-QTC_VERSION=4.9.0
+MY_COMMIT="7fd2aa8cee654f1ac9ae27069ead2aab4e4ea4ad"
+QTC_VERSION=4.10.1
 MY_QTCV=${QTC_VERSION/_/-}
 MY_QTC=qt-creator-opensource-src-${MY_QTCV}
 [[ ${MY_QTCV} == ${QTC_VERSION} ]] && MY_REL=official || MY_REL=development
@@ -22,7 +22,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 
 RDEPEND="
-	=dev-qt/qt-creator-${QTC_VERSION%.*}*
+	=dev-qt/qt-creator-${PV}*
 	dev-util/meson
 "
 DEPEND="${RDEPEND}"
