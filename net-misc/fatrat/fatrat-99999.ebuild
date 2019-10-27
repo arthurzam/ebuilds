@@ -17,6 +17,7 @@ IUSE="bittorrent bittorrent-search +curl doc xmpp nls webinterface"
 REQUIRED_USE="bittorrent-search? ( bittorrent )"
 
 RDEPEND="
+	dev-libs/boost:=
 	dev-qt/qtdbus:5
 	dev-qt/qtgui:5
 	dev-qt/qtsvg:5
