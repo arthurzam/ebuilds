@@ -16,10 +16,15 @@ KEYWORDS="~amd64 ~x86"
 RDEPEND="sys-libs/ncurses:=
 	!sys-process/iotop"
 DEPEND="${RDEPEND}"
+BDEPEND="virtual/pkgconfig"
+
+PATCHES=( "${FILESDIR}/${P}-makefile-fix.patch" )
+
+DOCS=( README.md )
 
 S="${WORKDIR}/iotop-${MY_COMMIT}"
 
 src_install() {
+	default
 	dobin iotop
-	dodoc README.md
 }
