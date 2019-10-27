@@ -3,7 +3,7 @@
 
 EAPI=7
 
-inherit user git-r3 cmake-utils xdg-utils
+inherit git-r3 cmake-utils xdg-utils
 
 DESCRIPTION="QMPlay2 is a video player, it can plays all formats and stream"
 HOMEPAGE="http://qt-apps.org/content/show.php/QMPlay2?content=153339"
@@ -68,6 +68,7 @@ src_configure() {
 		-DUSE_PULSEAUDIO=$(usex pulseaudio)
 		-DUSE_TAGLIB=$(usex taglib)
 		-DUSE_XVIDEO=$(usex xvideo)
+		-DUSE_LYRICS=false
 	)
 	use !debug && append-cppflags -DQT_NO_DEBUG_OUTPUT
 	cmake-utils_src_configure
