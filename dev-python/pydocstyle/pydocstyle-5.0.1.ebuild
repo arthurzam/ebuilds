@@ -15,4 +15,3 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 
 RDEPEND="dev-python/snowballstemmer[${PYTHON_USEDEP}]"
-BDEPDND="dev-python/setuptools[${PYTHON_USEDEP}]"
