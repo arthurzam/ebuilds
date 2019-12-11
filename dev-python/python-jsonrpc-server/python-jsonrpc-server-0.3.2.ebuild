@@ -14,5 +14,7 @@ LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 
-RDEPEND="dev-python/future[${PYTHON_USEDEP}]"
-BDEPDND="dev-python/setuptools[${PYTHON_USEDEP}]"
+RDEPEND="
+	dev-python/future[${PYTHON_USEDEP}]
+	<=dev-python/ujson-1.35[${PYTHON_USEDEP}]
+"
