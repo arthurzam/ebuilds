@@ -11,7 +11,7 @@ HOMEPAGE="https://dev.gentoo.org/~mpagano/genpatches/
 IUSE="experimental"
 
 K_WANT_GENPATCHES="base extras experimental"
-K_GENPATCHES_VER="9"
+K_GENPATCHES_VER="3"
 K_SECURITY_UNSUPPORTED="1"
 K_DEBLOB_AVAILABLE="1"
 K_NOSETEXTRAVERSION="1"
@@ -32,7 +32,7 @@ MUQSS_PATCHSET_FILE="http://ck.kolivas.org/patches/5.0/${K_BRANCH_ID}/${K_BRANCH
 SRC_URI="${KERNEL_URI} ${GENPATCHES_URI} ${ARCH_URI} ${MUQSS_PATCHSET_FILE}"
 
 UNIPATCH_LIST="${DISTDIR}/${K_BRANCH_ID}-ck1-broken-out.tar.xz"
-UNIPATCH_EXCLUDE="0002-Fix-Werror-build-failure-in-tools.patch"
+#UNIPATCH_EXCLUDE="0002-Fix-Werror-build-failure-in-tools.patch"
 UNIPATCH_STRICTORDER="yes"
 
 pkg_setup() {
