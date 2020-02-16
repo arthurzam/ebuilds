@@ -22,7 +22,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 
 RDEPEND="
-	=dev-qt/qt-creator-${PV}*
+	=dev-qt/qt-creator-$(ver_cut 1-2)*
 	dev-util/meson
 "
 DEPEND="${RDEPEND}"

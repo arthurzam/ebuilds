@@ -23,7 +23,7 @@ KEYWORDS="~amd64 ~x86"
 
 RDEPEND="
 	app-text/hunspell:=
-	=dev-qt/qt-creator-${PV}*
+	=dev-qt/qt-creator-$(ver_cut 1-2)*
 "
 DEPEND="${RDEPEND}"
 
