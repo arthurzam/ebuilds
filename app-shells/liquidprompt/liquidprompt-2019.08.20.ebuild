@@ -3,7 +3,7 @@
 
 EAPI=7
 
-MY_COMMIT="eda83efe4e0044f880370ed5e92aa7e3fdbef971"
+MY_COMMIT="5f4aeece8d6cf98138e729f7833e11e985ca44d3"
 
 DESCRIPTION="A full-featured & carefully designed adaptive prompt for Bash & Zsh"
 HOMEPAGE="https://github.com/nojhan/liquidprompt"
