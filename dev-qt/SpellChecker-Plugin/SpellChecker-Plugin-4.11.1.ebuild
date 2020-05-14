@@ -33,8 +33,9 @@ src_configure() {
 	cat > spellchecker_local_paths.pri <<-EOF
 		LOCAL_QTCREATOR_SOURCES=$(realpath ../qt-creator-opensource-src-${QTC_VERSION})
 		LOCAL_IDE_BUILD_TREE=/usr
-		LOCAL_HUNSPELL_LIB_DIR=/usr/lib
+		LOCAL_HUNSPELL_LIB_DIR=/usr/$(get_libdir)
 		LOCAL_HUNSPELL_SRC_DIR=/usr
+		IDE_LIBRARY_BASENAME=$(get_libdir)
 	EOF
 
 	eqmake5 DISTRO=gentoo USE_USER_DESTDIR=no QTC_PREFIX="/usr"

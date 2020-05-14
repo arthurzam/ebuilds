@@ -34,7 +34,7 @@ PATCHES=( "${DISTDIR}/${P}-version-4.11.patch" )
 
 src_configure() {
 	local IDE_SOURCE_TREE=$(realpath ../qt-creator-opensource-src-${QTC_VERSION})
-	eqmake5 DISTRO=gentoo IDE_SOURCE_TREE="${IDE_SOURCE_TREE}" IDE_BUILD_TREE="/usr" USE_USER_DESTDIR=no QTC_PREFIX="/usr"
+	eqmake5 DISTRO=gentoo IDE_SOURCE_TREE="${IDE_SOURCE_TREE}" IDE_BUILD_TREE="/usr" USE_USER_DESTDIR=no QTC_PREFIX="/usr" IDE_LIBRARY_BASENAME="$(get_libdir)"
 }
 
 src_install() {
