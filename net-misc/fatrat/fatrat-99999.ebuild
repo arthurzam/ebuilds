@@ -42,7 +42,7 @@ src_configure() {
 		-DWITH_NLS=$(usex nls)
 		-DWITH_WEBINTERFACE=$(usex webinterface)
 		-DQt5WebEngine_FOUND=$(usex bittorrent-search)
-		-Dlibtorrent_LDFLAGS="/usr/lib/libtorrent-rasterbar.a;-lboost_system;-lboost_chrono-mt;-lboost_random-mt;-lpthread;-lssl;-lcrypto"
+		-Dlibtorrent_LDFLAGS="/usr/lib64/libtorrent-rasterbar.a;-lboost_system;-lboost_chrono-mt;-lboost_random-mt;-lpthread;-lssl;-lcrypto"
 	)
 	cmake-utils_src_configure
 }
