@@ -1,22 +1,34 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
 EGIT_REPO_URI="https://github.com/Tomas-M/iotop"
-inherit git-r3
+inherit fcaps git-r3 linux-info
 
 DESCRIPTION="top utility for IO (C port)"
 HOMEPAGE="https://github.com/Tomas-M/iotop"
 
-LICENSE="GPL-2"
+LICENSE="GPL-2+"
 SLOT="0"
 
 RDEPEND="sys-libs/ncurses:=
 	!sys-process/iotop"
 DEPEND="${RDEPEND}"
+BDEPEND="virtual/pkgconfig"
+
+CONFIG_CHECK="~TASK_IO_ACCOUNTING ~TASK_DELAY_ACCT ~TASKSTATS ~VM_EVENT_COUNTERS"
+
+FILECAPS=(
+	cap_net_admin=eip usr/bin/iotop
+)
+
+src_compile() {
+	emake V=1
+}
 
 src_install() {
 	dobin iotop
 	dodoc README.md
+	doman iotop.8
 }
