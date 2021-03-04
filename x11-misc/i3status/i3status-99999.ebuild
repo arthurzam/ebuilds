@@ -11,7 +11,6 @@ EGIT_REPO_URI="https://github.com/arthurzam/i3status"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
 IUSE="static"
 
 RDEPEND="
@@ -35,7 +34,10 @@ src_configure() {
 	use static && local mycmakeargs=(
 		-DLIBCONFUSE_LIBRARIES=/usr/$(get_libdir)/libconfuse.a
 		-DLIBNL_LIBRARIES="/usr/$(get_libdir)/libnl-3.a;/usr/$(get_libdir)/libnl-genl-3.a"
+		-DMODULE_DISK_INFO=1
+		-DMODULE_TEMPERATURE=1
+		-DMODULE_RUN_WATCH=1
 	)
-	append-cppflags -fvisibility=hidden
+	append-cppflags -fvisibility=hidden -fcommon
 	cmake-utils_src_configure
 }
