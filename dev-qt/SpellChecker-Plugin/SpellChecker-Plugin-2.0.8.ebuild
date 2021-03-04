@@ -4,37 +4,37 @@
 EAPI=7
 inherit qmake-utils
 
-DESCRIPTION="Basic Meson build system integration for Qt Creator"
+DESCRIPTION="SpellChecker Plugin for Qt Creator"
 HOMEPAGE="https://github.com/CJCombrink/SpellChecker-Plugin"
 
-MY_COMMIT="dc2af6361367a7ba2d3a9f0b6205bdf66909b709"
-QTC_VERSION=4.10.1
+QTC_VERSION=4.14.1
 MY_QTCV=${QTC_VERSION/_/-}
 MY_QTC=qt-creator-opensource-src-${MY_QTCV}
 [[ ${MY_QTCV} == ${QTC_VERSION} ]] && MY_REL=official || MY_REL=development
 
 SRC_URI="
-	https://github.com/CJCombrink/${PN}/archive/${MY_COMMIT}.tar.gz -> ${P}.tar.gz
+	https://github.com/CJCombrink/${PN}/archive/v${PV}.tar.gz -> ${P}.tar.gz
 	https://download.qt.io/${MY_REL}_releases/qtcreator/${QTC_VERSION%.*}/${MY_QTCV}/${MY_QTC}.tar.xz"
 
-LICENSE="MIT"
+LICENSE="LGPL-3+"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 
 RDEPEND="
 	app-text/hunspell:=
-	=dev-qt/qt-creator-$(ver_cut 1-2)*
+	=dev-qt/qt-creator-$(ver_cut 1-2 "${QTC_VERSION}")*
 "
 DEPEND="${RDEPEND}"
 
-S="${WORKDIR}/${PN}-${MY_COMMIT}"
+#S="${WORKDIR}/${PN}-${"
 
 src_configure() {
 	cat > spellchecker_local_paths.pri <<-EOF
 		LOCAL_QTCREATOR_SOURCES=$(realpath ../qt-creator-opensource-src-${QTC_VERSION})
 		LOCAL_IDE_BUILD_TREE=/usr
-		LOCAL_HUNSPELL_LIB_DIR=/usr/lib
+		LOCAL_HUNSPELL_LIB_DIR=/usr/$(get_libdir)
 		LOCAL_HUNSPELL_SRC_DIR=/usr
+		IDE_LIBRARY_BASENAME=$(get_libdir)
 	EOF
 
 	eqmake5 DISTRO=gentoo USE_USER_DESTDIR=no QTC_PREFIX="/usr"
