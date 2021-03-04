@@ -4,7 +4,6 @@
 EAPI=7
 
 PYTHON_COMPAT=( python3_{7..9} )
-PYTHON_REQ_USE="threads"
 DISTUTILS_OPTIONAL=true
 DISTUTILS_IN_SOURCE_BUILD=true
 
@@ -18,7 +17,7 @@ SRC_URI="https://github.com/arvidn/libtorrent/releases/download/libtorrent-${MY_
 
 LICENSE="BSD"
 SLOT="0/9"
-KEYWORDS="amd64 ~arm ~ppc ~ppc64 ~sparc x86"
+KEYWORDS="amd64 x86"
 IUSE="debug +dht doc examples libressl python +ssl static-libs test"
 
 REQUIRED_USE="python? ( ${PYTHON_REQUIRED_USE} )"

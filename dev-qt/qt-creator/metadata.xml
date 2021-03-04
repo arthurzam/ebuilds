@@ -14,7 +14,6 @@
 		<flag name="autotest">Enable integration with popular unit testing frameworks (QtTest, Google Test, Boost.Test)</flag>
 		<flag name="autotools">Build plugin for autotools-based projects</flag>
 		<flag name="baremetal">Build plugin for bare metal devices</flag>
-		<flag name="bazaar">Add support for GNU Bazaar version control system (requires manual installation of Bazaar client)</flag>
 		<flag name="beautifier">Build the beautifier plugin (supports astyle, clang-format, and uncrustify)</flag>
 		<flag name="boot2qt">Build plugin for Boot2Qt devices</flag>
 		<flag name="clang">Build clang-based plugins (code model, formatting, static analysis)</flag>
@@ -36,7 +35,6 @@
 		<flag name="python">Build plugin for Python language support</flag>
 		<flag name="qbs">Build plugin for QBS-based projects</flag>
 		<flag name="qmldesigner">Enable designer for QML/QtQuick-based UIs</flag>
-		<flag name="qmljs">Build the QML/JavaScript editor plugin</flag>
 		<flag name="qmlprofiler">Build the QML profiler plugin</flag>
 		<flag name="qnx">Build plugin for QNX devices</flag>
 		<flag name="remotelinux">Add support for deployment and execution on a remote Linux host</flag>
