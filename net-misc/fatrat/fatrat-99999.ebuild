@@ -3,7 +3,7 @@
 
 EAPI=7
 
-inherit cmake-utils git-r3
+inherit cmake git-r3 optfeature
 
 DESCRIPTION="Qt5-based download/upload manager"
 HOMEPAGE="http://fatrat.dolezel.info/"
@@ -42,16 +42,13 @@ src_configure() {
 		-DWITH_NLS=$(usex nls)
 		-DWITH_WEBINTERFACE=$(usex webinterface)
 		-DQt5WebEngine_FOUND=$(usex bittorrent-search)
-		-Dlibtorrent_LDFLAGS="/usr/lib64/libtorrent-rasterbar.a;-lboost_system;-lboost_chrono-mt;-lboost_random-mt;-lpthread;-lssl;-lcrypto"
+		-Dlibtorrent_LDFLAGS="/usr/$(get_libdir)/libtorrent-rasterbar.a;-lboost_system;-lboost_chrono-mt;-lboost_random-mt;-lpthread;-lssl;-lcrypto"
 	)
-	cmake-utils_src_configure
+	cmake_src_configure
 }
 
 pkg_postinst() {
-	# this is a completely optional and NOT automagic dep
-	if ! has_version dev-libs/geoip; then
-		elog "If you want the GeoIP support, then emerge dev-libs/geoip."
-	fi
+	optfeature "GeoIP support" dev-libs/geoip
 	xdg_desktop_database_update
 }
 
