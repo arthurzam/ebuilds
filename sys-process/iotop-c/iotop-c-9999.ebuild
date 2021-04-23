@@ -4,7 +4,7 @@
 EAPI=7
 
 EGIT_REPO_URI="https://github.com/Tomas-M/iotop"
-inherit fcaps git-r3 linux-info
+inherit fcaps git-r3 linux-info toolchain-funcs
 
 DESCRIPTION="top utility for IO (C port)"
 HOMEPAGE="https://github.com/Tomas-M/iotop"
@@ -24,7 +24,7 @@ FILECAPS=(
 )
 
 src_compile() {
-	emake V=1
+	emake V=1 CC="$(tc-getCC)" PKG_CONFIG="$(tc-getPKG_CONFIG)"
 }
 
 src_install() {
