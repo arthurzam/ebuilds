@@ -7,7 +7,7 @@ inherit qmake-utils
 DESCRIPTION="SpellChecker Plugin for Qt Creator"
 HOMEPAGE="https://github.com/CJCombrink/SpellChecker-Plugin"
 
-QTC_VERSION=4.14.1
+QTC_VERSION=4.15.0
 MY_QTCV=${QTC_VERSION/_/-}
 MY_QTC=qt-creator-opensource-src-${MY_QTCV}
 [[ ${MY_QTCV} == ${QTC_VERSION} ]] && MY_REL=official || MY_REL=development
@@ -37,7 +37,9 @@ src_configure() {
 		IDE_LIBRARY_BASENAME=$(get_libdir)
 	EOF
 
-	eqmake5 DISTRO=gentoo USE_USER_DESTDIR=no QTC_PREFIX="/usr"
+	eqmake5 DISTRO=gentoo USE_USER_DESTDIR=no QTC_PREFIX="/usr" \
+		KSYNTAXHIGHLIGHTING_LIB_DIR="${EPREFIX}/usr/$(get_libdir)" \
+		KSYNTAXHIGHLIGHTING_INCLUDE_DIR="${EPREFIX}/usr/include/KF5/KSyntaxHighlighting"
 }
 
 src_install() {
