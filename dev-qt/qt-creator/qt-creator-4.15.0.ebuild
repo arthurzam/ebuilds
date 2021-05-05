@@ -1,8 +1,8 @@
-# Copyright 1999-2020 Gentoo Authors
+# Copyright 1999-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
-LLVM_MAX_SLOT=11
+LLVM_MAX_SLOT=12
 PLOCALES="cs da de fr ja pl ru sl uk zh-CN zh-TW"
 
 inherit llvm qmake-utils virtualx xdg
@@ -26,24 +26,25 @@ fi
 
 # TODO: unbundle sqlite
 
-QTC_PLUGINS=(android +autotest autotools:autotoolsprojectmanager baremetal beautifier boot2qt
-	'+clang:clangcodemodel|clangformat|clangpchmanager|clangrefactoring|clangtools' clearcase
-	cmake:cmakeprojectmanager cppcheck ctfvisualizer cvs +designer git glsl:glsleditor +help ios
-	lsp:languageclient mcu:mcusupport mercurial modeling:modeleditor nim perforce perfprofiler python
-	qbs:qbsprojectmanager +qmldesigner qmlprofiler qnx remotelinux scxml:scxmleditor serialterminal
-	silversearcher subversion valgrind webassembly winrt)
-IUSE="doc systemd test +webengine ${QTC_PLUGINS[@]%:*}"
+QTC_PLUGINS=(android +autotest autotools:autotoolsprojectmanager baremetal bazaar beautifier boot2qt
+	'+clang:clangcodemodel|clangformat|clangtools' clearcase cmake:cmakeprojectmanager cppcheck
+	ctfvisualizer cvs +designer git glsl:glsleditor +help lsp:languageclient mcu:mcusupport mercurial
+	modeling:modeleditor nim perforce perfprofiler python qbs:qbsprojectmanager +qmldesigner
+	+qmljs:qmljseditor qmlprofiler qnx remotelinux scxml:scxmleditor serialterminal silversearcher
+	subversion valgrind webassembly)
+IUSE="doc systemd test webengine ${QTC_PLUGINS[@]%:*}"
 RESTRICT="!test? ( test )"
 REQUIRED_USE="
 	boot2qt? ( remotelinux )
 	clang? ( test? ( qbs ) )
 	mcu? ( cmake )
 	python? ( lsp )
+	qmldesigner? ( qmljs )
 	qnx? ( remotelinux )
 "
 
 # minimum Qt version required
-QT_PV="5.14.0:5"
+QT_PV="5.14:5"
 
 BDEPEND="
 	>=dev-qt/linguist-tools-${QT_PV}
@@ -51,7 +52,6 @@ BDEPEND="
 	doc? ( >=dev-qt/qdoc-${QT_PV} )
 "
 CDEPEND="
-	>=dev-cpp/yaml-cpp-0.6.2:=
 	>=dev-qt/qtconcurrent-${QT_PV}
 	>=dev-qt/qtcore-${QT_PV}
 	>=dev-qt/qtdeclarative-${QT_PV}[widgets]
@@ -67,7 +67,9 @@ CDEPEND="
 	>=dev-qt/qtxml-${QT_PV}
 	kde-frameworks/syntax-highlighting:5
 	clang? (
+		>=dev-cpp/yaml-cpp-0.6.2:=
 		|| (
+			sys-devel/clang:12
 			sys-devel/clang:11
 			sys-devel/clang:10
 		)
@@ -79,7 +81,6 @@ CDEPEND="
 		webengine? ( >=dev-qt/qtwebengine-${QT_PV}[widgets] )
 	)
 	perfprofiler? ( dev-libs/elfutils )
-	qbs? ( >=dev-util/qbs-1.13.1 )
 	serialterminal? ( >=dev-qt/qtserialport-${QT_PV} )
 	systemd? ( sys-apps/systemd:= )
 "
@@ -94,11 +95,12 @@ DEPEND="${CDEPEND}
 RDEPEND="${CDEPEND}
 	sys-devel/gdb[python]
 	autotools? ( sys-devel/autoconf )
-	cmake? ( dev-util/cmake )
+	cmake? ( >=dev-util/cmake-3.14 )
 	cppcheck? ( dev-util/cppcheck )
 	cvs? ( dev-vcs/cvs )
 	git? ( dev-vcs/git )
 	mercurial? ( dev-vcs/mercurial )
+	qbs? ( >=dev-util/qbs-1.15 )
 	qmldesigner? ( >=dev-qt/qtquicktimeline-${QT_PV} )
 	silversearcher? ( sys-apps/the_silver_searcher )
 	subversion? ( dev-vcs/subversion )
@@ -114,25 +116,8 @@ unset x
 PATCHES=(
 )
 
-llvm_check_deps() {
-	has_version -d "sys-devel/clang:${LLVM_SLOT}"
-}
-
 pkg_setup() {
-	if use clang; then
-		llvm_pkg_setup
-		local llvm_prefix=$(get_llvm_prefix "${LLVM_MAX_SLOT}")
-		local format_file="${llvm_prefix}"/include/clang/Format/Format.h
-		local patched_string="^#define KEEP_LINE_BREAKS_FOR_NON_EMPTY_LINES_BACKPORTED$"
-		if ! grep "${patched_string}" "${format_file}" &> /dev/null; then
-			eerror "The \"clang\" USE flag is selected but the clangformat plugin"
-			eerror "requires that sys-devel/clang:${LLVM_MAX_SLOT} first be patched"
-			eerror "to support KeepLineBreaksForNonEmptyLines. For details,"
-			eerror "see https://codereview.qt.nokia.com/c/clang/clang/+/258014"
-			eerror
-			die "no support in clang for KeepLineBreaksForNonEmptyLines"
-		fi
-	fi
+	use clang && llvm_pkg_setup
 }
 
 src_prepare() {
@@ -146,12 +131,13 @@ src_prepare() {
 				src/plugins/plugins.pro || die "failed to disable ${plugin%:*} plugin"
 		fi
 	done
-	sed -i -e '/updateinfo/d' src/plugins/plugins.pro || die
+	sed -i -re '/\<(clangpchmanager|clangrefactoring|ios|updateinfo|winrt)\>/d' src/plugins/plugins.pro || die
+	sed -i -re '/clang(pchmanager|refactoring)backend/d' src/tools/tools.pro || die
 
 	# avoid building unused support libraries and tools
 	if ! use clang; then
-		sed -i -e '/clangsupport/d' src/libs/libs.pro || die
-		sed -i -e '/clang\(\|pchmanager\|refactoring\)backend/d' src/tools/tools.pro || die
+		sed -i -e '/clangsupport\|sqlite\|yaml-cpp/d' src/libs/libs.pro || die
+		sed -i -e '/clangbackend/d' src/tools/tools.pro || die
 	fi
 	if ! use glsl; then
 		sed -i -e '/glsl/d' src/libs/libs.pro || die
@@ -169,8 +155,12 @@ src_prepare() {
 		fi
 	fi
 	if ! use qmldesigner; then
+		sed -i -e '/advanceddockingsystem/d' src/libs/libs.pro || die
 		sed -i -e '/qml2puppet/d' src/tools/tools.pro || die
 		sed -i -e '/qmldesigner/d' tests/auto/qml/qml.pro || die
+	fi
+	if ! use qmljs; then
+		sed -i -e '/qmleditorwidgets/d' src/libs/libs.pro || die
 	fi
 	if ! use valgrind; then
 		sed -i -e '/valgrindfake/d' src/tools/tools.pro || die
@@ -218,8 +208,6 @@ src_configure() {
 		KSYNTAXHIGHLIGHTING_INCLUDE_DIR="${EPREFIX}/usr/include/KF5/KSyntaxHighlighting" \
 		$(use clang && echo LLVM_INSTALL_DIR="$(get_llvm_prefix ${LLVM_MAX_SLOT})") \
 		$(use qbs && echo QBS_INSTALL_DIR="${EPREFIX}/usr") \
-		CONFIG+=qbs_disable_rpath \
-		CONFIG+=qbs_enable_project_file_updates \
 		$(use systemd && echo CONFIG+=journald) \
 		$(use test && echo BUILD_TESTS=1)
 }
