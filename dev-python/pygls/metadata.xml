@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>arthurzam+gentoo@gmail.com</email>
+		<name>Arthur Zamarin</name>
+	</maintainer>
+	<upstream>
+		<remote-id type="pypi">pygls</remote-id>
+		<remote-id type="github">openlawlibrary/pygls</remote-id>
+	</upstream>
+</pkgmetadata>
