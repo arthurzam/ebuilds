@@ -37,7 +37,7 @@ RESTRICT="mirror strip test"
 src_install() {
 	insinto /opt/chromium.org/thorium/
 	doins -r opt/chromium.org/thorium/.
-	fperms +x opt/chromium.org/thorium/{thorium,thorium-browser,thorium_shell}
+	fperms +x /opt/chromium.org/thorium/{thorium,thorium-browser,thorium_shell}
 	fperms 4755 /opt/chromium.org/thorium/{chrome_crashpad_handler,chrome-sandbox}
 
 	local sizes=( 16 24 32 48 64 128 256 )
