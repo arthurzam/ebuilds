@@ -15,8 +15,6 @@ SLOT="0"
 KEYWORDS="amd64"
 RESTRICT="strip"
 
-RDEPEND="net-libs/webkit-gtk:4"
-
 src_install() {
 	insinto /opt/Bruno
 	doins -r opt/Bruno/.
