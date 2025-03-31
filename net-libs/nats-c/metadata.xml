@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>arthurzam@gentoo.org</email>
+		<name>Arthur Zamarin</name>
+	</maintainer>
+	<upstream>
+		<remote-id type="github">nats-io/nats.c</remote-id>
+	</upstream>
+	<use>
+		<flag name="sodium">Enable support for crypto through <pkg>dev-libs/libsodium</pkg></flag>
+	</use>
+</pkgmetadata>
