@@ -16,7 +16,6 @@ KEYWORDS="~amd64"
 IUSE="+ssl sodium"
 
 DEPEND="
-	dev-libs/protobuf-c
 	sodium? ( dev-libs/libsodium )
 	ssl? ( dev-libs/openssl )
 "
@@ -24,6 +23,7 @@ RDEPEND="${DEPEND}"
 
 src_configure() {
 	local mycmakeargs=(
+		-DNATS_BUILD_STREAMING=OFF
 		-DNATS_BUILD_WITH_TLS=$(usex ssl)
 		-DNATS_BUILD_USE_SODIUM=$(usex sodium)
 	)
