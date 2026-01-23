@@ -8,8 +8,8 @@ inherit desktop wrapper xdg unpacker
 DESCRIPTION="Fast and secure browser for the modern web"
 HOMEPAGE="https://thorium.rocks"
 SRC_URI="
-	cpu_flags_x86_avx? (
-		https://github.com/Alex313031/thorium/releases/download/${PV}/thorium-browser_${PV}_AVX.deb
+	cpu_flags_x86_avx2? (
+		https://github.com/Alex313031/thorium/releases/download/M${PV}/thorium-browser_${PV}_AVX2.deb
 	)
 "
 S=${WORKDIR}
@@ -17,8 +17,8 @@ S=${WORKDIR}
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64"
-IUSE="cpu_flags_x86_avx"
-REQUIRED_USE="cpu_flags_x86_avx"
+IUSE="cpu_flags_x86_avx2"
+REQUIRED_USE="cpu_flags_x86_avx2"
 RESTRICT="mirror strip test"
 
 src_install() {
