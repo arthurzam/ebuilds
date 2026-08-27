@@ -4,7 +4,7 @@
 EAPI=8
 
 # Build number is part of the upstream release URL but not of the version.
-GB_BUILD=3180
+GB_BUILD=3215
 
 RPM_COMPRESS_TYPE=zstd
 inherit desktop rpm shell-completion xdg
