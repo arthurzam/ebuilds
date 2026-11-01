@@ -121,7 +121,7 @@ RUST_MIN_VER="1.98.0"
 # libgit2 submodule of the git2 fork (libgit2-sys/libgit2)
 LIBGIT2_PV="1.9.4"
 
-inherit cargo desktop xdg
+inherit cargo desktop shell-completion xdg
 
 DESCRIPTION="Git client for simultaneous branches (native GPUI client)"
 HOMEPAGE="https://gitbutler.com/ https://github.com/gitbutlerapp/gitbutler"
@@ -150,8 +150,10 @@ RESTRICT="test"
 DEPEND="
 	dev-db/sqlite:3
 	dev-libs/oniguruma:=
+	dev-libs/openssl:=
 	media-libs/fontconfig
 	media-libs/freetype
+	net-misc/curl
 	virtual/zlib:=
 	x11-libs/libxcb:=
 	x11-libs/libxkbcommon[X]
@@ -201,12 +203,19 @@ src_configure() {
 	export RUSTONIG_SYSTEM_LIBONIG=1
 	# share app data and settings with GitButler's release builds
 	export CHANNEL=release
+	export VERSION=${PV}
 
 	cargo_src_configure
 }
 
 src_compile() {
-	cargo_src_compile --package but-gpui --package gitbutler-git --bins
+	cargo_src_compile --package but-gpui --package gitbutler-git --package but --bins \
+		--features but/packaged-but-distribution
+
+	local but="$(cargo_target_dir)/but" shell
+	for shell in bash zsh fish; do
+		"${but}" completions ${shell} > "${T}/but.${shell}" || die
+	done
 }
 
 src_test() {
@@ -216,8 +225,13 @@ src_test() {
 src_install() {
 	# the askpass helper has to sit next to the binary
 	exeinto /usr/libexec/${PN}
-	doexe "$(cargo_target_dir)"/gitbutler-{gpui,git-askpass}
+	doexe "$(cargo_target_dir)"/{but,gitbutler-{gpui,git-askpass}}
 	dosym -r /usr/libexec/${PN}/gitbutler-gpui /usr/bin/gitbutler-gpui
+	dosym -r /usr/libexec/${PN}/but /usr/bin/but
+
+	newbashcomp "${T}/but.bash" but
+	newzshcomp "${T}/but.zsh" _but
+	newfishcomp "${T}/but.fish" but.fish
 
 	local size
 	for size in 32 64 128; do
