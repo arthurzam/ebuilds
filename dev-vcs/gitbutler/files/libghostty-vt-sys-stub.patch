@@ -1,0 +1,17 @@
+--- a/build.rs
++++ b/build.rs
+@@ -68,6 +68,14 @@
+ }
+ 
+ fn main() {
++    // Link the stubs from LIBGHOSTTY_VT_STUB_DIR instead of fetching Ghostty and building it
++    // with zig.
++    println!("cargo:rerun-if-env-changed=LIBGHOSTTY_VT_STUB_DIR");
++    let stubs = env::var("LIBGHOSTTY_VT_STUB_DIR").expect("LIBGHOSTTY_VT_STUB_DIR must be set");
++    println!("cargo:rustc-link-search=native={stubs}");
++    println!("cargo:rustc-link-lib=static=ghostty-vt");
++    return;
++
+     // docs.rs has no Zig toolchain. The checked-in bindings in src/bindings.rs
+     // are enough for generating documentation, so skip the entire native
+     // build when running under docs.rs.

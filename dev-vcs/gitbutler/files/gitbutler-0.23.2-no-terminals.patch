@@ -1,0 +1,11 @@
+--- a/crates/but-tty/src/lib.rs
++++ b/crates/but-tty/src/lib.rs
+@@ -46,6 +46,8 @@
+     /// Starts the user's shell in `cwd`, sized `size`, running `command` in place of a prompt
+     /// when there is one.
+     pub fn spawn(cwd: &Path, size: Size, command: Option<&str>) -> anyhow::Result<Self> {
++        // libghostty-vt is stubbed out, so no terminal can run
++        anyhow::bail!("terminals are not supported in this build");
+         let (pty, output) = Pty::spawn(cwd, size, command)?;
+         Ok(Self { pty, output, size })
+     }
