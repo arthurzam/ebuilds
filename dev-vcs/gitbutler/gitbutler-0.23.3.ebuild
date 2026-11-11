@@ -86,6 +86,8 @@ declare -A GIT_CRATES=(
 	[gpui_wgpu]='https://github.com/zed-industries/zed;28d0a3547f16b9609b301b48ab363bfca649c864;zed-%commit%/crates/gpui_wgpu'
 	[gpui_windows]='https://github.com/zed-industries/zed;28d0a3547f16b9609b301b48ab363bfca649c864;zed-%commit%/crates/gpui_windows'
 	[http_client]='https://github.com/zed-industries/zed;28d0a3547f16b9609b301b48ab363bfca649c864;zed-%commit%/crates/http_client'
+	[libghostty-vt-sys]='https://github.com/uzaaft/libghostty-rs;9ede35b8ea94a55ed3608408d67e102883129f1e;libghostty-rs-%commit%/crates/libghostty-vt-sys'
+	[libghostty-vt]='https://github.com/uzaaft/libghostty-rs;9ede35b8ea94a55ed3608408d67e102883129f1e;libghostty-rs-%commit%/crates/libghostty-vt'
 	[libgit2-sys]='https://github.com/gitbutlerapp/git2-rs;a87a7bb3f6843504339fe7434ee0732a3e968f3e;git2-rs-%commit%/libgit2-sys'
 	[minus]='https://github.com/arijit79/minus;57f1848f831d153a10d65060562ce1fdde938a01;minus-%commit%'
 	[naga-types]='https://github.com/gfx-rs/wgpu;3b3506ea31154edc04de64debda0e780cba2639c;wgpu-%commit%/naga-types'
@@ -121,7 +123,7 @@ RUST_MIN_VER="1.98.0"
 # libgit2 submodule of the git2 fork (libgit2-sys/libgit2)
 LIBGIT2_PV="1.9.4"
 
-inherit cargo desktop shell-completion xdg
+inherit cargo desktop shell-completion toolchain-funcs xdg
 
 DESCRIPTION="Git client for simultaneous branches (native GPUI client)"
 HOMEPAGE="https://gitbutler.com/ https://github.com/gitbutlerapp/gitbutler"
@@ -146,6 +148,10 @@ SLOT="0"
 KEYWORDS="~amd64"
 
 RESTRICT="test"
+
+PATCHES=(
+	"${FILESDIR}"/${PN}-0.23.2-no-terminals.patch
+)
 
 DEPEND="
 	dev-db/sqlite:3
@@ -183,6 +189,20 @@ src_prepare() {
 	rmdir "${dir}" || die
 	mv "${WORKDIR}/libgit2-${LIBGIT2_PV}" "${dir}" || die
 
+	# libghostty-vt, which the embedded terminals run on, needs zig 0.17 to
+	# build. Patch the terminals out instead: no shell ever starts, so nothing
+	# calls into ghostty, and a library of aborting stubs stands in for it.
+	IFS=';' read -r _ commit dir <<< "${GIT_CRATES[libghostty-vt-sys]}"
+	dir="${WORKDIR}/${dir//%commit%/${commit}}"
+	pushd "${dir}" >/dev/null || die
+	eapply "${FILESDIR}"/libghostty-vt-sys-stub.patch
+	popd >/dev/null || die
+	{
+		echo '#include <stdlib.h>'
+		grep -o 'pub fn ghostty_[[:alnum:]_]*' "${dir}"/src/bindings.rs | sort -u |
+			sed 's/^pub fn \(.*\)/void \1(void) { abort(); }/'
+	} > "${T}"/ghostty-stub.c || die
+
 	# debundle openssl and sqlite. libgit2 stays bundled: git2 is built with
 	# unstable-sha256, which needs libgit2 built with GIT_EXPERIMENTAL_SHA256
 	sed "${sed_args[@]}" \
@@ -201,6 +221,7 @@ src_configure() {
 	unset POSTHOG_API_KEY
 	export LIBSQLITE3_SYS_USE_PKG_CONFIG=1
 	export RUSTONIG_SYSTEM_LIBONIG=1
+	export LIBGHOSTTY_VT_STUB_DIR="${T}"/ghostty
 	# share app data and settings with GitButler's release builds
 	export CHANNEL=release
 	export VERSION=${PV}
@@ -209,6 +230,10 @@ src_configure() {
 }
 
 src_compile() {
+	mkdir "${T}"/ghostty || die
+	$(tc-getCC) ${CFLAGS} -c "${T}"/ghostty-stub.c -o "${T}"/ghostty/stub.o || die
+	$(tc-getAR) rcs "${T}"/ghostty/libghostty-vt.a "${T}"/ghostty/stub.o || die
+
 	cargo_src_compile --package but-gpui --package gitbutler-git --package but --bins \
 		--features but/packaged-but-distribution
 
