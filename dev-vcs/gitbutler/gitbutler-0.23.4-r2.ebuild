@@ -86,8 +86,8 @@ declare -A GIT_CRATES=(
 	[gpui_wgpu]='https://github.com/zed-industries/zed;28d0a3547f16b9609b301b48ab363bfca649c864;zed-%commit%/crates/gpui_wgpu'
 	[gpui_windows]='https://github.com/zed-industries/zed;28d0a3547f16b9609b301b48ab363bfca649c864;zed-%commit%/crates/gpui_windows'
 	[http_client]='https://github.com/zed-industries/zed;28d0a3547f16b9609b301b48ab363bfca649c864;zed-%commit%/crates/http_client'
-	[libghostty-vt-sys]='https://github.com/uzaaft/libghostty-rs;9ede35b8ea94a55ed3608408d67e102883129f1e;libghostty-rs-%commit%/crates/libghostty-vt-sys'
-	[libghostty-vt]='https://github.com/uzaaft/libghostty-rs;9ede35b8ea94a55ed3608408d67e102883129f1e;libghostty-rs-%commit%/crates/libghostty-vt'
+	[libghostty-vt-sys]='https://github.com/uzaaft/libghostty-rs;cd4d497e8c698b27054a677ce19d1bd1a1a4d8bf;libghostty-rs-%commit%/crates/libghostty-vt-sys'
+	[libghostty-vt]='https://github.com/uzaaft/libghostty-rs;cd4d497e8c698b27054a677ce19d1bd1a1a4d8bf;libghostty-rs-%commit%/crates/libghostty-vt'
 	[libgit2-sys]='https://github.com/gitbutlerapp/git2-rs;a87a7bb3f6843504339fe7434ee0732a3e968f3e;git2-rs-%commit%/libgit2-sys'
 	[minus]='https://github.com/arijit79/minus;57f1848f831d153a10d65060562ce1fdde938a01;minus-%commit%'
 	[naga-types]='https://github.com/gfx-rs/wgpu;3b3506ea31154edc04de64debda0e780cba2639c;wgpu-%commit%/naga-types'
@@ -159,7 +159,7 @@ DEPEND="
 	virtual/zlib:=
 	x11-libs/libxcb:=
 	x11-libs/libxkbcommon[X]
-	>=x11-terms/ghostty-1.4.0
+	dev-libs/libghostty-vt:=
 "
 # wayland and vulkan are dlopen()ed
 RDEPEND="${DEPEND}
@@ -168,6 +168,10 @@ RDEPEND="${DEPEND}
 	media-libs/vulkan-loader
 "
 BDEPEND="virtual/pkgconfig"
+
+PATCHES=(
+	"${FILESDIR}"/${P}-libghostty-vt-1.0.patch
+)
 
 src_prepare() {
 	default

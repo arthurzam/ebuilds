@@ -1,0 +1,235 @@
+Bump libghostty-rs to the libghostty-vt 1.0.1 API, so but-tty links
+against the system libghostty-vt.
+
+Upstream-PR: https://github.com/gitbutlerapp/gitbutler/pull/17271
+
+diff -ruN a/Cargo.lock b/Cargo.lock
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -7742,7 +7742,7 @@
+ [[package]]
+ name = "libghostty-vt"
+ version = "0.2.1"
+-source = "git+https://github.com/uzaaft/libghostty-rs?rev=9ede35b8ea94a55ed3608408d67e102883129f1e#9ede35b8ea94a55ed3608408d67e102883129f1e"
++source = "git+https://github.com/uzaaft/libghostty-rs?rev=cd4d497e8c698b27054a677ce19d1bd1a1a4d8bf#cd4d497e8c698b27054a677ce19d1bd1a1a4d8bf"
+ dependencies = [
+  "bitflags 2.13.0",
+  "int-enum",
+@@ -7752,7 +7752,7 @@
+ [[package]]
+ name = "libghostty-vt-sys"
+ version = "0.2.1"
+-source = "git+https://github.com/uzaaft/libghostty-rs?rev=9ede35b8ea94a55ed3608408d67e102883129f1e#9ede35b8ea94a55ed3608408d67e102883129f1e"
++source = "git+https://github.com/uzaaft/libghostty-rs?rev=cd4d497e8c698b27054a677ce19d1bd1a1a4d8bf#cd4d497e8c698b27054a677ce19d1bd1a1a4d8bf"
+ 
+ [[package]]
+ name = "libgit2-sys"
+diff -ruN a/crates/but-tty/Cargo.toml b/crates/but-tty/Cargo.toml
+--- a/crates/but-tty/Cargo.toml
++++ b/crates/but-tty/Cargo.toml
+@@ -26,9 +26,9 @@
+ serde.workspace = true
+ serde_json.workspace = true
+ tracing.workspace = true
+-# Its build compiles Ghostty with Zig 0.17. From master, past 0.2.2, for reading the selection
+-# back to copy it.
+-libghostty-vt = { git = "https://github.com/uzaaft/libghostty-rs", rev = "9ede35b8ea94a55ed3608408d67e102883129f1e" }
++# Its build compiles Ghostty with Zig 0.17. From master, past 0.2.2: targets libghostty-vt 1.0.1, and
++# reads the selection back to copy it.
++libghostty-vt = { git = "https://github.com/uzaaft/libghostty-rs", rev = "cd4d497e8c698b27054a677ce19d1bd1a1a4d8bf" }
+ 
+ [dev-dependencies]
+ tempfile.workspace = true
+diff -ruN a/crates/but-tty/src/ghostty.rs b/crates/but-tty/src/ghostty.rs
+--- a/crates/but-tty/src/ghostty.rs
++++ b/crates/but-tty/src/ghostty.rs
+@@ -7,7 +7,7 @@
+ use std::fs;
+ use std::path::{Path, PathBuf};
+ 
+-use libghostty_vt::style::RgbColor;
++use libghostty_vt::color::Rgb as RgbColor;
+ 
+ const CONFIG_FILES: [&str; 2] = ["config", "config.ghostty"];
+ 
+diff -ruN a/crates/but-tty/src/lib.rs b/crates/but-tty/src/lib.rs
+--- a/crates/but-tty/src/lib.rs
++++ b/crates/but-tty/src/lib.rs
+@@ -30,10 +30,11 @@
+ use pty::{Output, Pty};
+ pub use vt::{Cursor, Frame, Row, Run, Status, Style};
+ 
++pub use libghostty_vt::color::Rgb as RgbColor;
+ pub use libghostty_vt::key::{Key, Mods};
+ pub use libghostty_vt::mouse;
+ pub use libghostty_vt::render::CursorVisualStyle;
+-pub use libghostty_vt::style::{RgbColor, Underline};
++pub use libghostty_vt::style::Underline;
+ 
+ /// A shell just started, with nothing emulating it yet, so it can start off the UI thread.
+ pub struct Shell {
+diff -ruN a/crates/but-tty/src/vt.rs b/crates/but-tty/src/vt.rs
+--- a/crates/but-tty/src/vt.rs
++++ b/crates/but-tty/src/vt.rs
+@@ -8,19 +8,23 @@
+ use std::sync::Arc;
+ use std::time::{Duration, Instant};
+ 
++use libghostty_vt::color::Rgb as RgbColor;
++use libghostty_vt::effect::{
++    ClipboardWriteError, ProgramStatus, ProgramStatusState, ProgressReport, ProgressState,
++};
+ use libghostty_vt::error::Error;
+-use libghostty_vt::fmt::{Format, Formatter, FormatterOptions};
++use libghostty_vt::fmt::{Extras, Format, Formatter};
+ use libghostty_vt::focus;
+ use libghostty_vt::key::{self, Key, Mods};
++use libghostty_vt::mode::Mode;
+ use libghostty_vt::mouse;
++use libghostty_vt::point::{Coordinate as PointCoordinate, Point as GridPoint};
+ use libghostty_vt::render::{CellIterator, CursorVisualStyle, Dirty, RowId, RowIterator};
++use libghostty_vt::report::ColorScheme;
+ use libghostty_vt::screen::{CellWide, Screen};
+ use libghostty_vt::selection::gesture::{self, Gesture};
+-use libghostty_vt::style::{RgbColor, Underline};
+-use libghostty_vt::terminal::{
+-    ClipboardWriteError, ColorScheme, Mode, Point as GridPoint, PointCoordinate, ProgramStatus,
+-    ProgramStatusState, ProgressReport, ProgressState, ScrollViewport,
+-};
++use libghostty_vt::style::Underline;
++use libghostty_vt::terminal::ScrollViewport;
+ use libghostty_vt::{RenderState, paste};
+ 
+ use super::{Colors, Size};
+@@ -195,7 +199,7 @@
+ 
+ impl Vt {
+     pub(crate) fn new(size: Size) -> libghostty_vt::error::Result<Self> {
+-        use libghostty_vt::terminal::{
++        use libghostty_vt::effect::{
+             ConformanceLevel, DeviceAttributeFeature, DeviceAttributes, DeviceType,
+             PrimaryDeviceAttributes, SecondaryDeviceAttributes, TertiaryDeviceAttributes,
+         };
+@@ -294,7 +298,9 @@
+             })
+         })?;
+         let mut mouse = mouse::Encoder::new()?;
+-        mouse.set_track_last_cell(true).set_size(encoder_size(size));
++        mouse
++            .set_track_last_cell(true)
++            .set_size(encoder_size(size))?;
+         Ok(Self {
+             term,
+             drawer,
+@@ -443,7 +449,7 @@
+             return Vec::new();
+         }
+         let mut bytes = [0; 16];
+-        let written = scheme.encode_report(&mut bytes).unwrap_or(0);
++        let written = scheme.encode(&mut bytes).unwrap_or(0);
+         bytes[..written].to_vec()
+     }
+ 
+@@ -456,7 +462,7 @@
+         (self.term)
+             .resize(size.cols, size.rows, cell.0, cell.1)
+             .ok();
+-        self.mouse.set_size(encoder_size(size));
++        self.mouse.set_size(encoder_size(size)).ok();
+         self.take_replies()
+     }
+ 
+@@ -582,16 +588,13 @@
+     /// What's selected, as Ghostty copies it: lines the terminal wrapped joined again, and
+     /// without the blanks trailing each.
+     pub(crate) fn selected(&self) -> Option<String> {
+-        let selection = self.term.selection().ok()??;
+-        let options = FormatterOptions::new()
+-            .with_format(Format::Plain)
+-            .with_unwrap(true)
+-            .with_trim(true)
+-            .with_selection(&selection);
+-        let text = Formatter::new(&self.term, options)
+-            .ok()?
+-            .format_alloc(None)
++        let mut formatter = Formatter::new_selection(&self.term).ok()??;
++        formatter
++            .set_format(Format::Plain)
++            .and_then(|f| f.set_unwrap(true))
++            .and_then(|f| f.set_trim(true))
+             .ok()?;
++        let text = formatter.format_alloc(None).ok()?;
+         Some(String::from_utf8_lossy(&text).into_owned())
+     }
+ 
+@@ -639,23 +642,27 @@
+     /// An alternate screen comes without the one behind it.
+     #[cfg(unix)]
+     pub(crate) fn screen(&self) -> libghostty_vt::error::Result<Vec<u8>> {
+-        let options = FormatterOptions::new()
+-            .with_format(Format::Vt)
+-            .with_modes(true)
+-            .with_scrolling_region(true)
+-            .with_pwd(true)
+-            .with_keyboard(true)
+-            .with_cursor(true)
+-            .with_style(true)
+-            .with_hyperlink(true)
+-            .with_protection(true)
+-            .with_kitty_keyboard(true)
+-            .with_charsets(true);
++        let mut formatter = Formatter::new(&self.term)?;
++        formatter
++            .set_format(Format::Vt)?
++            .set_trim(false)?
++            .set_extras(
++                Extras::MODES
++                    | Extras::SCROLLING_REGION
++                    | Extras::PWD
++                    | Extras::KEYBOARD
++                    | Extras::CURSOR
++                    | Extras::STYLE
++                    | Extras::HYPERLINK
++                    | Extras::PROTECTION
++                    | Extras::KITTY_KEYBOARD
++                    | Extras::CHARSETS,
++            )?;
+         let title = self.term.title().unwrap_or_default();
+         let mut screen = b"\x1b]2;".to_vec();
+         screen.extend_from_slice(title);
+         screen.extend_from_slice(b"\x1b\\");
+-        screen.extend_from_slice(&Formatter::new(&self.term, options)?.format_alloc(None)?);
++        screen.extend_from_slice(&formatter.format_alloc(None)?);
+         Ok(screen)
+     }
+ 
+@@ -1348,10 +1355,8 @@
+         let mut vt = Vt::new(SIZE).unwrap();
+         vt.write(b"hello world");
+         let cell = |x| {
+-            let point = libghostty_vt::terminal::PointCoordinate { x, y: 0 };
+-            vt.term
+-                .grid_ref(libghostty_vt::terminal::Point::Viewport(point))
+-                .unwrap()
++            let point = PointCoordinate { x, y: 0 };
++            vt.term.grid_ref(GridPoint::Viewport(point)).unwrap()
+         };
+         let hello = libghostty_vt::selection::Selection::new(cell(0), cell(4), false);
+         vt.term.set_selection(Some(&hello)).unwrap();
+@@ -1672,11 +1677,13 @@
+ 
+     #[cfg(unix)]
+     fn plain(vt: &Vt) -> String {
+-        let options = FormatterOptions::new().with_format(Format::Plain);
+-        let text = Formatter::new(&vt.term, options)
++        let mut formatter = Formatter::new(&vt.term).unwrap();
++        formatter
++            .set_format(Format::Plain)
+             .unwrap()
+-            .format_alloc(None)
++            .set_trim(false)
+             .unwrap();
++        let text = formatter.format_alloc(None).unwrap();
+         String::from_utf8(text.to_vec()).unwrap()
+     }
+ 
